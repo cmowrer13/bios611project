@@ -16,6 +16,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pandoc \
     && rm -rf /var/lib/apt/lists/*
 
+# Enable man pages in Ubuntu (non-interactive)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    man-db manpages manpages-dev less \
+    && yes | unminimize \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install/upgrade R packages for rendering
 RUN Rscript -e "install.packages(c('rmarkdown'), repos='https://cloud.r-project.org')"
 
