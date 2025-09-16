@@ -26,4 +26,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN Rscript -e "install.packages(c('rmarkdown'), repos='https://cloud.r-project.org')"
 
 # Default workdir
-WORKDIR /project
+WORKDIR /home/rstudio/work
