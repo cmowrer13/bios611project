@@ -9,6 +9,11 @@ docker run -d \
 --name bios611project_container \
 bios611project 
 
-echo "Container started! Open localhost:8787 in your browser."
-echo "Username: rstudio"
-echo "Password: 611project"
+BOLD="\033[1m"
+RESET="\033[0m"
+BLUE="\033[38;2;75;156;211m"
+
+echo ""
+echo -e "${BOLD}Container started!${RESET} Open localhost:8787 in your browser."
+echo -e "Username: ${BLUE}rstudio${RESET}"
+echo -e "Password: ${BLUE}611project${RESET}"
