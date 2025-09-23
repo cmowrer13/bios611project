@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install/upgrade R packages for rendering
-RUN Rscript -e "install.packages(c('rmarkdown', 'baseballr'), repos='https://cloud.r-project.org')"
+RUN Rscript -e "install.packages(c('rmarkdown'), repos='https://cloud.r-project.org')"
+RUN Rscript -e "remotes::install_github('BillPetti/baseballr')"
 
 # Default workdir
 WORKDIR /home/rstudio/work
