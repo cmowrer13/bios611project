@@ -79,4 +79,4 @@ neighbor_df_named <- neighbor_df %>%
          neighbor_pitcher_name, neighbor_pitch_name,
          distance)
 
-write.csv(neighbor_df_named, "derived_data/similar_pitches.csv")
+write.csv(neighbor_df_named, "derived_data/similar_pitches.csv", row.names = FALSE)
