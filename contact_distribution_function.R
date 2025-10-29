@@ -1,4 +1,4 @@
-get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, pitch_type, width) {
+get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, pitch_type, width = 5) {
   
   require(tidyverse)
   
