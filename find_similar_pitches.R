@@ -15,7 +15,8 @@ pitch_profiles <- all_pitches %>%
 feature_cols <- c("release_speed", "release_spin_rate", "spin_axis", "pfx_x", "pfx_z", "plate_x", "plate_z")
 
 pitch_profiles_scaled <- pitch_profiles %>%
-  mutate(across(all_of(feature_cols), ~scale(.) %>% as.vector()))
+  mutate(across(all_of(feature_cols), ~scale(.) %>% as.vector())) %>% 
+  mutate(pitch_id = row_number())
 
 feature_matrix <- as.matrix(pitch_profiles_scaled[, feature_cols])
 
@@ -59,4 +60,23 @@ neighbor_df <- neighbor_df %>%
       select(neighbor_id = pitch_id, neighbor_pitcher = pitcher, neighbor_pitch_name = pitch_name),
     by = "neighbor_id")
 
-write.csv(neighbor_df, "derived_data/similar_pitches.csv")
+player_ids <- read_csv("raw_data/player_ids.csv")
+
+neighbor_df_named <- neighbor_df %>%
+  # Join to get the main pitcher's name
+  left_join(
+    player_ids %>% rename(pitcher_name = player_name),
+    by = c("pitcher" = "key_mlbam")
+  ) %>%
+  # Join again to get the neighbor pitcher's name
+  left_join(
+    player_ids %>%
+      rename(neighbor_pitcher_name = player_name),
+    by = c("neighbor_pitcher" = "key_mlbam")
+  ) %>%
+  select(pitcher_name, pitch_name, 
+         rank,
+         neighbor_pitcher_name, neighbor_pitch_name,
+         distance)
+
+write.csv(neighbor_df_named, "derived_data/similar_pitches.csv")
