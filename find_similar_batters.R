@@ -6,7 +6,7 @@ all_pitches <- read_csv("raw_data/raw_data.csv") %>%
   filter(!is.na(pitch_name))
 
 bip_profiles <- all_pitches %>%
-  group_by(player_name, pitch_name) %>%
+  group_by(batter, pitch_name) %>%
   summarize(
     n_bip = n(),
     mean_la = mean(launch_angle, na.rm = TRUE),
@@ -23,7 +23,7 @@ strike_event <- 1:9
 swing_event <- c("foul", "foul_tip", "hit_into_play", "swinging_strike", "swinging_strike_blocked")
 
 plate_profiles <- all_pitches %>%
-  group_by(player_name, pitch_name) %>%
+  group_by(batter, pitch_name) %>%
   summarize(
     n_pitches = n(),
     # pitches outside the zone
@@ -41,8 +41,8 @@ plate_profiles <- all_pitches %>%
   filter(complete.cases(.))
 
 batter_profiles <- plate_profiles %>%
-  merge(bip_profiles, by = c("player_name", "pitch_name")) %>% 
-  select(player_name, pitch_name, mean_la, sd_la, mean_ev, sd_ev, chase_rate, whiff_rate, n_pitches)
+  merge(bip_profiles, by = c("batter", "pitch_name")) %>% 
+  select(batter, pitch_name, mean_la, sd_la, mean_ev, sd_ev, chase_rate, whiff_rate, n_pitches)
 
 feature_cols <- c("mean_la", "sd_la", "mean_ev", "sd_ev", "chase_rate", "whiff_rate")
 
@@ -103,16 +103,35 @@ neighbor_df <- batter_profiles_scaled %>%
 # Add names back in for readability
 neighbor_df <- neighbor_df %>%
   left_join(
-    batter_profiles_scaled %>% select(batter_id, player_name, pitch_name),
+    batter_profiles_scaled %>% select(batter_id, batter, pitch_name),
     by = "batter_id"
   ) %>%
   left_join(
     batter_profiles_scaled %>% 
       select(neighbor_id = batter_id,
-             neighbor_player_name = player_name,
+             neighbor_player = batter,
              neighbor_pitch_name = pitch_name),
     by = "neighbor_id"
   ) %>%
-  select(player_name, pitch_name, rank, neighbor_player_name, neighbor_pitch_name, distance)
+  select(batter, pitch_name, rank, neighbor_player, neighbor_pitch_name, distance)
 
-write.csv(neighbor_df, "derived_data/similar_batters.csv")
+player_ids <- read_csv("raw_data/player_ids.csv")
+
+neighbor_df_named <- neighbor_df %>%
+  # Join to get the main pitcher's name
+  left_join(
+    player_ids %>% rename(batter_name = player_name),
+    by = c("batter" = "key_mlbam")
+  ) %>%
+  # Join again to get the neighbor pitcher's name
+  left_join(
+    player_ids %>%
+      rename(neighbor_batter_name = player_name),
+    by = c("neighbor_player" = "key_mlbam")
+  ) %>%
+  select(batter_name, pitch_name, 
+         rank,
+         neighbor_batter_name, neighbor_pitch_name,
+         distance)
+
+write.csv(neighbor_df_named, "derived_data/similar_batters.csv")
