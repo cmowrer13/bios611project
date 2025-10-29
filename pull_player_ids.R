@@ -8,4 +8,4 @@ players <- player_ids %>%
   mutate(player_name = paste(name_first, name_last)) %>% 
   select(key_mlbam, player_name)
 
-write.csv(players, "raw_data/player_ids")
+write.csv(players, "raw_data/player_ids.csv")
