@@ -1,4 +1,4 @@
-get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, pitch_type) {
+get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, pitch_type, width) {
   
   require(tidyverse)
   
@@ -32,16 +32,16 @@ get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, p
   # Define 5-unit bins for launch angle and launch speed
   df_binned <- df %>%
     mutate(
-      la_bin = cut(launch_angle, breaks = seq(-90, 90, by = 5), include.lowest = TRUE, right = FALSE),
-      ev_bin = cut(launch_speed, breaks = seq(0, 120, by = 5), include.lowest = TRUE, right = FALSE)
+      la_bin = cut(launch_angle, breaks = seq(-90, 90, by = width), include.lowest = TRUE, right = FALSE),
+      ev_bin = cut(launch_speed, breaks = seq(0, 120, by = width), include.lowest = TRUE, right = FALSE)
     ) %>%
     count(la_bin, ev_bin) %>%
     mutate(freq = n / sum(n))
   
   # Fill in any empty bins for plotting completeness
   all_bins <- expand.grid(
-    la_bin = levels(cut(seq(-90, 90, by = 5), breaks = seq(-90, 90, by = 5), include.lowest = TRUE, right = FALSE)),
-    ev_bin = levels(cut(seq(0, 120, by = 5), breaks = seq(0, 120, by = 5), include.lowest = TRUE, right = FALSE))
+    la_bin = levels(cut(seq(-90, 90, by = 5), breaks = seq(-90, 90, by = width), include.lowest = TRUE, right = FALSE)),
+    ev_bin = levels(cut(seq(0, 120, by = 5), breaks = seq(0, 120, by = width), include.lowest = TRUE, right = FALSE))
   )
   
   df_complete <- all_bins %>%
