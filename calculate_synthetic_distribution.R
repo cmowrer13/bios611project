@@ -139,6 +139,14 @@ get_synthetic_distribution <- function(statcast_data,
     mutate(
       ev_bin = paste0("[", (ev_bin - 1) * width, ",", ev_bin * width, ")"))
   
+  smooth <- smooth %>%
+    mutate(
+      ev_bin = factor(
+        ev_bin,
+        levels = unique(ev_bin[order(as.numeric(sub("\\[(\\d+),.*", "\\1", unique(ev_bin))))])
+      )
+    )
+  
   # 7. Combine outputs
   
   require(imager)
