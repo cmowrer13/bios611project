@@ -25,7 +25,7 @@ get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, p
     )
   
   if (nrow(df) == 0) {
-    warning("No matching batted balls found for this batter/pitcher/pitch_type combination.")
+    #warning("No matching batted balls found for this batter/pitcher/pitch_type combination.")
     return(NULL)
   }
   
