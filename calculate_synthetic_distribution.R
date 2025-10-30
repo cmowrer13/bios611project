@@ -143,7 +143,7 @@ get_synthetic_distribution <- function(statcast_data,
     synthetic_distribution = synthetic,
     smooth_distribution = smooth,
     weights = c(real = w_true, pitch = w_pitch, batter = w_batter),
-    n = c(n, n_p, n_b),
+    n = c(n_true = n, n_pitch = n_p, n_batter = n_b),
     top_similar_pitches = top_similar_pitches,
     top_similar_batters = top_similar_batters
   )
