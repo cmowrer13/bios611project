@@ -1,4 +1,5 @@
 library(shiny)
+library(imager)
 library(tidyverse)
 library(shinycssloaders)
 
@@ -10,8 +11,6 @@ source("plot_synthetic_laev.R")
 all_pitches <- read_csv("raw_data/raw_data.csv")  %>% 
   filter(!pitch_name %in% c("Eephus", "Forkball", "Knuckleball", "Other", "Pitch Out", "Screwball", "Slow Curve")) %>% 
   filter(!is.na(pitch_name))
-
-player_ids <- read_csv("raw_data/player_ids.csv")
 
 batters <- sort(unique(similar_batters$batter_name))
 pitchers <- sort(unique(similar_pitches$pitcher_name))

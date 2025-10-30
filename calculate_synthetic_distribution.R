@@ -3,6 +3,7 @@ source("contact_distribution_function.R")
 
 similar_pitches <- read_csv("derived_data/similar_pitches.csv")
 similar_batters <- read_csv("derived_data/similar_batters.csv")
+player_ids <- read_csv("raw_data/player_ids.csv")
 
 normalize_weights <- function(df, dist_col = "distance"){
   df %>% 
