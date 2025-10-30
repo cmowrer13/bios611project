@@ -135,6 +135,10 @@ get_synthetic_distribution <- function(statcast_data,
   
   smooth <- smooth_distribution(synthetic)
   
+  smooth <- smooth %>% 
+    mutate(
+      ev_bin = paste0("[", (ev_bin - 1) * width, ",", ev_bin * width, ")"))
+  
   # 7. Combine outputs
   
   require(imager)
