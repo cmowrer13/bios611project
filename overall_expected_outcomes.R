@@ -79,4 +79,4 @@ result_smooth <- smooth_sparse_cells(result) %>%
   select(la_bin, ev_bin, n, hits, total_bases, xBABIP_final, xBsCON_final) %>% 
   filter(complete.cases(.))
 
-write.csv(result_smooth, "derived_data/expected_outcomes.csv")
+write.csv(result_smooth, "derived_data/expected_outcomes.csv", row.names = FALSE)
