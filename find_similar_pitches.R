@@ -20,7 +20,7 @@ pitch_profiles_scaled <- pitch_profiles %>%
 
 feature_matrix <- as.matrix(pitch_profiles_scaled[, feature_cols])
 
-k <- 10
+k <- 50
 
 nn <- nn2(data = feature_matrix, query = feature_matrix, k = k + 1)
 

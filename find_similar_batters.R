@@ -52,7 +52,7 @@ batter_profiles_scaled <- batter_profiles %>%
 
 feature_matrix <- as.matrix(batter_profiles_scaled[, feature_cols])
 
-k <- 10
+k <- 50
 
 neighbor_df <- batter_profiles_scaled %>%
   group_split(pitch_name) %>%
