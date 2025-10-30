@@ -22,14 +22,21 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      selectizeInput("batter", "Batter:", 
-                     choices = batters, multiple = FALSE, 
-                     options = list(placeholder = "Type batter name...")),
-      selectizeInput("pitcher", "Pitcher:", 
-                     choices = pitchers, multiple = FALSE, 
-                     options = list(placeholder = "Type pitcher name...")),
-      selectizeInput("pitch_type", "Pitch Type:", 
-                     choices = pitch_types, multiple = FALSE),
+      selectizeInput(
+        "batter", "Batter:", 
+        choices = batters, multiple = FALSE, 
+        options = list(placeholder = "Type batter name...")
+      ),
+      selectizeInput(
+        "pitcher", "Pitcher:", 
+        choices = pitchers, multiple = FALSE, 
+        options = list(placeholder = "Type pitcher name...")
+      ),
+      selectizeInput(
+        "pitch_type", "Pitch Type:", 
+        choices = NULL, multiple = FALSE, 
+        options = list(placeholder = "Select a pitcher first...")
+      ),
       actionButton("go", "Generate Synthetic Distribution", class = "btn-primary"),
       hr(),
       h4("Weights"),
@@ -43,7 +50,7 @@ ui <- fluidPage(
     
     mainPanel(
       h3("Synthetic LA/EV Distribution"),
-      withSpinner(plotOutput("laev_plot", height = "500px")),  # spinner during processing
+      withSpinner(plotOutput("laev_plot", height = "500px")),
       hr(),
       fluidRow(
         column(6, h4("Expected BABIP"), textOutput("xbabip")),
@@ -55,10 +62,23 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  # --- Dynamically update pitch type options based on selected pitcher ---
+  observeEvent(input$pitcher, {
+    req(input$pitcher)
+    
+    valid_pitches <- similar_pitches %>%
+      filter(pitcher_name == input$pitcher) %>%
+      distinct(pitch_name) %>%
+      pull(pitch_name) %>%
+      sort()
+    
+    updateSelectizeInput(session, "pitch_type", choices = valid_pitches, server = TRUE)
+  })
+  
+  # --- Reactive computations ---
   results <- eventReactive(input$go, {
     req(input$batter, input$pitcher, input$pitch_type)
     
-    # --- Compute synthetic distribution ---
     syn <- get_synthetic_distribution(
       statcast_data = all_pitches,
       batter_name = input$batter,
@@ -67,7 +87,6 @@ server <- function(input, output, session) {
       width = 10
     )
     
-    # --- Compute expected outcomes ---
     outcomes <- get_expected_outcomes(syn, expected)
     
     list(
@@ -76,13 +95,12 @@ server <- function(input, output, session) {
     )
   })
   
-  # --- Plot ---
+  # --- Outputs ---
   output$laev_plot <- renderPlot({
     req(results())
     plot_synthetic_laev(results()$syn)
   })
   
-  # --- Expected outcomes ---
   output$xbabip <- renderText({
     req(results())
     sprintf("%.3f", results()$outcomes$xBABIP)
@@ -93,13 +111,11 @@ server <- function(input, output, session) {
     sprintf("%.3f", results()$outcomes$xBsCON)
   })
   
-  # --- Weights ---
   output$weights <- renderPrint({
     req(results())
     results()$syn$weights
   })
   
-  # --- Similar batters (formatted nicely) ---
   output$similar_batters <- renderTable({
     req(results())
     head(results()$syn$top_similar_batters, 3) %>%
@@ -109,7 +125,6 @@ server <- function(input, output, session) {
       select(`Similar Batter Name`)
   })
   
-  # --- Similar pitches (formatted nicely) ---
   output$similar_pitches <- renderTable({
     req(results())
     head(results()$syn$top_similar_pitches, 3) %>%
