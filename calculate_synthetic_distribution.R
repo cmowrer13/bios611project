@@ -95,9 +95,56 @@ get_synthetic_distribution <- function(statcast_data,
     mutate(freq = w_true * freq + w_pitch * freq.p + w_batter * freq.b) %>%
     transmute(la_bin, ev_bin, freq = freq / sum(freq, na.rm = TRUE))
   
+  # 5. Pull most similar pitches and batters
+  
+  top_similar_pitches <- similar_pitches %>%
+    filter(pitcher_name == !!pitcher_name, pitch_name == !!pitch_type) %>%
+    arrange(distance) %>%
+    slice_head(n = 10) %>%
+    select(neighbor_pitcher_name, neighbor_pitch_name)
+  
+  top_similar_batters <- similar_batters %>%
+    filter(batter_name == !!batter_name, pitch_name == !!pitch_type) %>%
+    arrange(distance) %>%
+    slice_head(n = 10) %>%
+    select(neighbor_batter_name)
+  
+  # 6. Smooth distribution using Gaussian blur
+  smooth_distribution <- function(dist_df, sigma = 1) {
+    # Make sure we have full grid
+    dist_mat <- dist_df %>%
+      complete(la_bin, ev_bin, fill = list(freq = 0)) %>%
+      pivot_wider(names_from = ev_bin, values_from = freq, values_fill = 0)
+    
+    la_vals <- dist_mat$la_bin
+    dist_mat <- as.matrix(dist_mat[,-1])
+    
+    # Convert to image for smoothing
+    img <- as.cimg(dist_mat)
+    img_smooth <- isoblur(img, sigma = sigma)  # Gaussian blur
+    
+    # Back to data frame
+    smooth_df <- as.data.frame(as.matrix(img_smooth)) %>%
+      mutate(la_bin = la_vals) %>%
+      pivot_longer(-la_bin, names_to = "ev_bin", values_to = "freq") %>%
+      mutate(ev_bin = as.numeric(gsub("V", "", ev_bin))) %>%
+      mutate(freq = freq / sum(freq, na.rm = TRUE))  # re-normalize
+    
+    return(smooth_df)
+  }
+  
+  smooth <- smooth_distribution(synthetic)
+  
+  # 7. Combine outputs
+  
+  require(imager)
+  
   list(
     synthetic_distribution = synthetic,
+    smooth_distribution = smooth,
     weights = c(real = w_true, pitch = w_pitch, batter = w_batter),
-    n = c(n, n_p, n_b)
+    n = c(n, n_p, n_b),
+    top_similar_pitches = top_similar_pitches,
+    top_similar_batters = top_similar_batters
   )
 }
