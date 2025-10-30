@@ -82,6 +82,7 @@ get_synthetic_distribution <- function(statcast_data,
   
   list(
     synthetic_distribution = synthetic,
-    weights = c(real = w_true, pitch = w_pitch, batter = w_batter)
+    weights = c(real = w_true, pitch = w_pitch, batter = w_batter),
+    n = c(n, n_p, n_b)
   )
 }
