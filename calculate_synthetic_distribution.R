@@ -32,7 +32,7 @@ get_synthetic_distribution <- function(statcast_data,
     ) %>%
     filter(!map_lgl(dist, is.null)) %>%
     mutate(n_contrib = map_dbl(dist, ~ sum(.x$n, na.rm = TRUE))) %>%
-    mutate(weighted_dist = map2(dist, weight, ~ mutate(.x, freq = freq * .y)))
+    mutate(weighted_dist = map2(dist, weight_raw, ~ mutate(.x, freq = freq * .y)))
   
   if (nrow(pitch_dists) > 0) {
     dist_pitch <- bind_rows(pitch_dists$weighted_dist) %>%
@@ -42,7 +42,7 @@ get_synthetic_distribution <- function(statcast_data,
     dist_pitch <- dist_true %>% mutate(freq = 0)
   }
   
-  n_p <- sum((pitch_dists$weight^2) * pitch_dists$n_contrib, na.rm = TRUE)
+  n_p <- sum((pitch_dists$weight_raw) * pitch_dists$n_contrib, na.rm = TRUE)
   
   # 3. Similar batters
   sim_b <- similar_batters %>%
@@ -56,7 +56,7 @@ get_synthetic_distribution <- function(statcast_data,
     ) %>%
     filter(!map_lgl(dist, is.null)) %>%
     mutate(n_contrib = map_dbl(dist, ~ sum(.x$n, na.rm = TRUE))) %>%
-    mutate(weighted_dist = map2(dist, weight, ~ mutate(.x, freq = freq * .y)))
+    mutate(weighted_dist = map2(dist, weight_raw, ~ mutate(.x, freq = freq * .y)))
   
   if (nrow(batter_dists) > 0) {
     dist_batter <- bind_rows(batter_dists$weighted_dist) %>%
@@ -66,13 +66,28 @@ get_synthetic_distribution <- function(statcast_data,
     dist_batter <- dist_true %>% mutate(freq = 0)
   }
   
-  n_b <- sum((batter_dists$weight^2) * batter_dists$n_contrib, na.rm = TRUE)
+  n_b <- sum((batter_dists$weight_raw) * batter_dists$n_contrib, na.rm = TRUE)
   
   # 4. Combine weighted distributions
   denom <- sqrt(n) + sqrt(n_p) + sqrt(n_b)
   w_true <- sqrt(n) / denom
   w_pitch <- sqrt(n_p) / denom
   w_batter <- sqrt(n_b) / denom
+  
+  safe_dist <- function(d) {
+    if (is.null(d)) tibble(la_bin = character(), ev_bin = character(), freq = numeric())
+    else d
+  }
+  
+  dist_true  <- safe_dist(dist_true)
+  dist_pitch <- safe_dist(dist_pitch)
+  dist_batter <- safe_dist(dist_batter)
+  
+  if (nrow(dist_true) == 0) {
+    bin_ref <- if (nrow(dist_pitch) > 0) dist_pitch else dist_batter
+    if (nrow(bin_ref) > 0)
+      dist_true <- bin_ref %>% transmute(la_bin, ev_bin, freq = 0)
+  }
   
   synthetic <- full_join(dist_true, dist_pitch, by = c("la_bin", "ev_bin"), suffix = c("", ".p")) %>%
     full_join(dist_batter, by = c("la_bin", "ev_bin"), suffix = c("", ".b")) %>%
