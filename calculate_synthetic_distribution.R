@@ -49,14 +49,14 @@ get_synthetic_distribution <- function(statcast_data,
     filter(batter_name == !!batter_name, pitch_name == !!pitch_type) %>%
     normalize_weights("distance")
   
-  batter_dists <- sim_b %>%
+  suppressWarnings({batter_dists <- sim_b %>%
     mutate(
       dist = map(neighbor_batter_name,
                  ~ get_contact_distribution(statcast_data, .x, pitcher_name, pitch_type, width))
     ) %>%
     filter(!map_lgl(dist, is.null)) %>%
     mutate(n_contrib = map_dbl(dist, ~ sum(.x$n, na.rm = TRUE))) %>%
-    mutate(weighted_dist = map2(dist, weight_raw, ~ mutate(.x, freq = freq * .y)))
+    mutate(weighted_dist = map2(dist, weight_raw, ~ mutate(.x, freq = freq * .y)))})
   
   if (nrow(batter_dists) > 0) {
     dist_batter <- bind_rows(batter_dists$weighted_dist) %>%
