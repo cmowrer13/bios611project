@@ -25,4 +25,4 @@ for (date in date_char[-1]){
   data <- rbind(data, data_new)
 }
 
-write_csv(data, "./work/raw_data/raw_data.csv")
+write_csv(data, "raw_data/raw_data.csv")

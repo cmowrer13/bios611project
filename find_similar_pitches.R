@@ -16,7 +16,8 @@ feature_cols <- c("release_speed", "release_spin_rate", "spin_axis", "pfx_x", "p
 
 pitch_profiles_scaled <- pitch_profiles %>%
   mutate(across(all_of(feature_cols), ~scale(.) %>% as.vector())) %>% 
-  mutate(pitch_id = row_number())
+  mutate(pitch_id = row_number()) %>% 
+  filter(complete.cases(.))
 
 feature_matrix <- as.matrix(pitch_profiles_scaled[, feature_cols])
 

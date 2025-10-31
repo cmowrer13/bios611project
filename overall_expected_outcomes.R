@@ -1,3 +1,5 @@
+library(tidyverse)
+
 all_pitches <- read_csv("raw_data/raw_data.csv")
 
 build_xBABIP_xBsCON_grid <- function(statcast_data, width = 10){
