@@ -7,7 +7,7 @@ library(mclust)
 library(plotly)
 library(htmlwidgets)
 
-set.seed(13)
+set.seed(15)
 
 all_pitches <- read_csv("raw_data/raw_data.csv")
 
@@ -84,8 +84,8 @@ tsne_df_interactive <- tsne_df %>%
       "Velocity: ", round(release_speed.y, 1), " mph<br>",
       "Spin Rate: ", round(release_spin_rate.y), " rpm<br>",
       "Spin Axis: ", round(spin_axis.y, 1), "°<br>",
-      "Vertical Movement: ", round(pfx_x.y, 2), " in<br>",
-      "Horizontal Movement: ", round(pfx_z.y, 2), " in<br>",
+      "Vertical Movement: ", 12*round(pfx_x.y, 2), " in<br>",
+      "Horizontal Movement: ", 12*round(pfx_z.y, 2), " in<br>",
       "Location X: ", round(plate_x.y, 2), "<br>",
       "Location Z: ", round(plate_z.y, 2), "<br>",
       "Cluster: ", cluster
