@@ -41,7 +41,7 @@ p_pca <- fviz_pca_biplot(
   addEllipses = TRUE
 )
 
-ggsave("figures/pca_biplot.png", p_pca)
+ggsave("figures/pca_biplot_pitches.png", p_pca)
 
 
 # t-SNE visualization
@@ -105,7 +105,7 @@ p_interactive <- ggplotly(p, tooltip = "text")
 
 saveWidget(
   widget = p_interactive,
-  file = "figures/tsne_clusters_interactive.html",
+  file = "figures/tsne_clusters_interactive_pitches.html",
   selfcontained = TRUE
 )
 
