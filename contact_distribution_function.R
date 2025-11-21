@@ -35,7 +35,7 @@ get_contact_distribution <- function(statcast_data, batter_name, pitcher_name, p
       la_bin = cut(launch_angle, breaks = seq(-90, 90, by = width), include.lowest = TRUE, right = FALSE),
       ev_bin = cut(launch_speed, breaks = seq(0, 120, by = width), include.lowest = TRUE, right = FALSE)
     ) %>%
-    count(la_bin, ev_bin) %>%
+    dplyr::count(la_bin, ev_bin) %>%
     mutate(freq = n / sum(n))
   
   # Fill in any empty bins for plotting completeness

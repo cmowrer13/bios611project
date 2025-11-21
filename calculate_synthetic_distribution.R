@@ -37,8 +37,8 @@ get_synthetic_distribution <- function(statcast_data,
   
   if (nrow(pitch_dists) > 0) {
     dist_pitch <- bind_rows(pitch_dists$weighted_dist) %>%
-      group_by(la_bin, ev_bin) %>%
-      summarise(freq = sum(freq, na.rm = TRUE), .groups = "drop")
+      dplyr::group_by(la_bin, ev_bin) %>%
+      dplyr::summarise(freq = sum(freq, na.rm = TRUE), .groups = "drop")
   } else {
     dist_pitch <- dist_true %>% mutate(freq = 0)
   }
@@ -52,7 +52,7 @@ get_synthetic_distribution <- function(statcast_data,
   
   suppressWarnings({batter_dists <- sim_b %>%
     mutate(
-      dist = map(neighbor_batter_name,
+      dist = purrr::map(neighbor_batter_name,
                  ~ get_contact_distribution(statcast_data, .x, pitcher_name, pitch_type, width))
     ) %>%
     filter(!map_lgl(dist, is.null)) %>%
@@ -61,8 +61,8 @@ get_synthetic_distribution <- function(statcast_data,
   
   if (nrow(batter_dists) > 0) {
     dist_batter <- bind_rows(batter_dists$weighted_dist) %>%
-      group_by(la_bin, ev_bin) %>%
-      summarise(freq = sum(freq, na.rm = TRUE), .groups = "drop")
+      dplyr::group_by(la_bin, ev_bin) %>%
+      dplyr::summarise(freq = sum(freq, na.rm = TRUE), .groups = "drop")
   } else {
     dist_batter <- dist_true %>% mutate(freq = 0)
   }
