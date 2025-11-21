@@ -7,8 +7,7 @@ player_ids <- read_csv("raw_data/player_ids.csv")
 
 normalize_weights <- function(df, dist_col = "distance"){
   df %>% 
-    mutate(weight_raw = 1 / (!!sym(dist_col) + 1e-6),
-           weight = weight_raw / sum(weight_raw))
+    mutate(weight_raw = exp(-1*!!sym(dist_col)/2))
 }
 
 get_synthetic_distribution <- function(statcast_data,
