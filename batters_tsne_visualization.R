@@ -65,7 +65,7 @@ p_pca <- fviz_pca_biplot(
   pca_batters,
   geom = "point",
   habillage = batter_profiles_scaled$pitch_name,
-  addEllipses = TRUE
+  addEllipses = FALSE
 )
 
 ggsave("figures/pca_biplot_batters.png", p_pca)
