@@ -3,6 +3,7 @@ library(Rtsne)
 library(mclust)
 library(plotly)
 library(htmlwidgets)
+library(factoextra)
 
 set.seed(13)
 
