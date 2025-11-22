@@ -4,6 +4,8 @@ library(mclust)
 library(plotly)
 library(htmlwidgets)
 
+set.seed(13)
+
 all_pitches <- read_csv("raw_data/raw_data.csv") %>% 
   filter(!pitch_name %in% c("Eephus", "Forkball", "Knuckleball", "Other", "Pitch Out", "Screwball", "Slow Curve")) %>% 
   filter(!is.na(pitch_name))
@@ -126,6 +128,8 @@ p <- ggplot(tsne_df_interactive, aes(
   labs(title = "t-SNE with Clusters")
 
 p_interactive <- ggplotly(p, tooltip = "text")
+
+ggsave("figures/tsne_clusters_static_batters.png", p)
 
 saveWidget(
   widget = p_interactive,
