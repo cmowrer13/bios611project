@@ -62,8 +62,6 @@ feature_matrix <- as.matrix(batter_profiles_scaled[, feature_cols])
 # PCA to explore structure
 pca_batters <- prcomp(feature_matrix, scale = FALSE)
 
-fviz_eig(pca_batters)
-
 p_pca <- fviz_pca_biplot(
   pca_batters,
   geom = "point",
@@ -71,7 +69,7 @@ p_pca <- fviz_pca_biplot(
   addEllipses = FALSE
 )
 
-ggsave("figures/pca_biplot_batters.png", p_pca)
+ggsave("figures/pca_biplot_batters.png", p_pca, width = 8, height = 6)
 
 # t-SNE visualization
 tsne_batters <- Rtsne(
@@ -91,7 +89,7 @@ p_tsne <- ggplot(tsne_df, aes(tsne1, tsne2, color = pitch_name)) +
   labs(title = "t-SNE of Batter Profiles (2025 Season)",
        color = "Pitch Name")
 
-ggsave("figures/tsne_batters.png", p_tsne)
+ggsave("figures/tsne_batters.png", p_tsne, width = 8, height = 6)
 
 # Gaussian mixture model and visualization
 gmm <- Mclust(feature_matrix)
@@ -130,7 +128,7 @@ p <- ggplot(tsne_df_interactive, aes(
 
 p_interactive <- ggplotly(p, tooltip = "text")
 
-ggsave("figures/tsne_clusters_static_batters.png", p)
+ggsave("figures/tsne_clusters_static_batters.png", p, width = 8, height = 6)
 
 saveWidget(
   widget = p_interactive,
