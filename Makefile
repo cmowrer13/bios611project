@@ -18,6 +18,7 @@ derived_data/:
 figures/:
 	mkdir -p figures/
 
+
 ## DATA PULLING
 raw_data/raw_data.csv: pull_data.R | raw_data/
 	Rscript pull_data.R
@@ -78,14 +79,13 @@ shiny_app: shiny_app.R \
 	
 	
 ## REPORT
-report.html: report.Rmd \
+report.pdf: report.Rmd \
              figures/pca_biplot_pitches.png \
-             figures/tsne_by_pitch.png \
-             figures/tsne_clusters_interactive_pitches.html \
+             figures/tsne_clusters_static_pitches.png \
              figures/pca_biplot_batters.png \
-             figures/tsne_batters.png \
-             figures/tsne_clusters_interactive_batters.html
-	Rscript -e "rmarkdown::render('report.Rmd', output_file='report.html', output_format='html_document')"
+             figures/tsne_clusters_static_batters.png \
+             shiny_app_example.png
+	Rscript -e "rmarkdown::render('report.Rmd', output_file='report.pdf', output_format='pdf_document')"
 
 
 ## CLEANING
@@ -93,4 +93,4 @@ clean:
 	rm -rf raw_data/*.csv
 	rm -rf derived_data/*.csv
 	rm -rf figures/*
-	rm -f report.html
+	rm -f report.pdf
