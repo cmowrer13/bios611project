@@ -32,8 +32,6 @@ feature_matrix <- as.matrix(pitch_profiles_scaled[, feature_cols])
 # PCA to explore structure
 pca_pitches <- prcomp(feature_matrix, scale = FALSE)
 
-fviz_eig(pca_pitches)
-
 p_pca <- fviz_pca_biplot(
   pca_pitches,
   geom = "point",
