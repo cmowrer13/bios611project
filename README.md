@@ -14,6 +14,8 @@ To explore this project, clone this Github repository to your local machine. Nav
 
 The Shiny application can be used by opening the shiny_app.R script in RStudio Server and selecting "Run App" at the top of the window.
 
+Interactive visualizations of GMM clustering can be found in the figures directory, named `tsne_clusters_interactive_pitches.html` and`tsne_clusters_interactive_batters.html`.
+
 **Important note:** Please note that the web server that is queried in the first step of the analysis can sometimes be unreliable and return the error "No payload acquired" in the middle of pulling the data. I have been unable to figure out why this happens, but trying again and re-running the pull_data.R script will usually resolve the issue. The task of pulling the data usually takes approximately 30-40 minutes.
 
 Instructions for developers: The project is organized using the build system Make, which allows for the project workflow to be automated. The Makefile describes all of the dependencies between the elements of the project and can be used to easily update downstream elements if an earlier component is modified. The project is also developed using Docker, to create an identical environment for the analysis, preconfigured with all required packages.
