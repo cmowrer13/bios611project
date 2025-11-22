@@ -71,13 +71,11 @@ figures/tsne_clusters_interactive_batters.html &: batters_tsne_visualization.R r
 	
 	
 ## SHINY APP
-shiny_app: shiny_app.R \
-           contact_distribution_function \
+shiny_app: contact_distribution_function \
            calculate_synthetic_distribution \
            calculated_expected_outcomes_from_synthetic \
            plot_synthetic_laev \
            raw_data/raw_data.csv
-	Rscript shiny_app.R
 	
 	
 ## REPORT
