@@ -12,7 +12,7 @@ set.seed(15)
 all_pitches <- read_csv("raw_data/raw_data.csv")
 
 pitch_profiles <- all_pitches %>% 
-  filter(!pitch_name %in% c("Eephus", "Forkball", "Knuckleball", "Other", "Pitch Out", "Screwball", "Slow Curve")) %>% 
+  filter(!pitch_name %in% c("Eephus", "Forkball", "Knuckleball", "Other", "Pitch Out", "Screwball", "Slow Curve", "Unknown")) %>% 
   filter(!is.na(pitch_name)) %>% 
   group_by(pitcher, pitch_name) %>% 
   summarize(across(c(release_speed, release_spin_rate, spin_axis, pfx_x, pfx_z, plate_x, plate_z),
@@ -41,7 +41,7 @@ p_pca <- fviz_pca_biplot(
   addEllipses = FALSE
 )
 
-ggsave("figures/pca_biplot_pitches.png", p_pca)
+ggsave("figures/pca_biplot_pitches.png", p_pca, width = 8, height = 6)
 
 
 # t-SNE visualization
@@ -62,7 +62,7 @@ p_tsne <- ggplot(tsne_df, aes(tsne1, tsne2, color = pitch_name)) +
   labs(title = "t-SNE of MLB Pitch Profiles (2025 Season)",
        color = "Pitch Name")
 
-ggsave("figures/tsne_by_pitch.png", p_tsne)
+ggsave("figures/tsne_by_pitch.png", p_tsne, width = 8, height = 6)
 
 
 # Gaussian mixture model and visualization
@@ -103,7 +103,7 @@ p <- ggplot(tsne_df_interactive, aes(
 
 p_interactive <- ggplotly(p, tooltip = "text")
 
-ggsave("figures/tsne_clusters_static_pitches.png", p)
+ggsave("figures/tsne_clusters_static_pitches.png", p, width = 8, height = 6)
 
 saveWidget(
   widget = p_interactive,
