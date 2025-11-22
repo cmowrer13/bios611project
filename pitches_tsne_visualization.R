@@ -103,6 +103,8 @@ p <- ggplot(tsne_df_interactive, aes(
 
 p_interactive <- ggplotly(p, tooltip = "text")
 
+ggsave("figures/tsne_clusters_static_pitches.png", p)
+
 saveWidget(
   widget = p_interactive,
   file = "figures/tsne_clusters_interactive_pitches.html",
