@@ -1,4 +1,5 @@
 library(baseballr)
+library(tidyverse)
 
 player_ids <- chadwick_player_lu() %>% 
   select(key_mlbam, name_last, name_first) %>% 
