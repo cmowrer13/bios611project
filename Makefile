@@ -5,7 +5,7 @@
         calculated_expected_outcomes_from_synthetic \
         shiny_app
         
-all: report.html
+all: report.pdf shiny_app
 
 
 ## DIRECTORIES
@@ -59,11 +59,13 @@ calculated_expected_outcomes_from_synthetic: calculated_expected_outcomes_from_s
 ## FIGURES
 figures/pca_biplot_pitches.png \
 figures/tsne_by_pitch.png \
+figures/tsne_clusters_static_pitches.png \
 figures/tsne_clusters_interactive_pitches.html &: pitches_tsne_visualization.R raw_data/raw_data.csv raw_data/player_ids.csv | figures/
 	Rscript pitches_tsne_visualization.R
 	
 figures/pca_biplot_batters.png \
 figures/tsne_batters.png \
+figures/tsne_clusters_static_batters.png \
 figures/tsne_clusters_interactive_batters.html &: batters_tsne_visualization.R raw_data/raw_data.csv raw_data/player_ids.csv | figures/
 	Rscript batters_tsne_visualization.R
 	
