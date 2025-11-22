@@ -10,7 +10,7 @@ Individual batter-pitcher matchups are often too sparse to support reliable pred
 
 ![](shiny_app_example.png)
 
-To explore this project, clone this Github repository to your local machine. Navigate to the project folder in a terminal emulator and run `bash start.sh` to initialize the reproducible analysis environment built using Docker. Open `localhost:8787` in your browser and enter the username and password displayed by the start script. Running `make` in the RStudio Server terminal will then automate the analysis and build the project report, Shiny app, and interactive visualizations.
+To explore this project, clone this Github repository to your local machine. Navigate to the project folder in a terminal emulator and run `bash start.sh` to initialize the reproducible analysis environment built using Docker. Open `localhost:8787` in your browser and enter the username and password displayed by the start script. Set the `work` directory as the working directory. Running `make` in the RStudio Server terminal will then automate the analysis and build the project report, Shiny app, and interactive visualizations.
 
 The Shiny application can be used by opening the shiny_app.R script in RStudio Server and selecting "Run App" at the top of the window.
 
